@@ -1,0 +1,17 @@
+{
+  "name": "serverless-general",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sls": "serverless -c './serverless-general.yml' "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^3.21.0",
+    "serverless-api-gateway-caching": "^1.8.1"
+  }
+}

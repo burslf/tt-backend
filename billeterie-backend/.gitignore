@@ -1,0 +1,35 @@
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual env
+.env/
+
+# Serverless directories
+.serverless
+
+# Node.js
+node_modules
+
+# Envs
+/env.develop.json
+/env.staging.json
+/env.prod.json
+
+**/.idea/
+
+*__pycache__*

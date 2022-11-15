@@ -1,0 +1,33 @@
+org: ticketrust
+app: billeterie
+service: billeterie-layers
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  stage: develop
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 'lambda:InvokeFunction'
+            - 'lambda:UpdateFunctionConfiguration'
+            - 'lambda:GetFunction'
+            - 'lambda:listAliases'
+            - 'lambda:listVersionsByFunction'
+            - 'lambda:deleteFunction'
+            - 'lambda:listLayerVersions'
+            - 'lambda:GetLayerVersion'
+            - 'lambda:deleteLayerVersion'
+          Resource:
+            - '*'
+
+layers:
+  python-app-dependencies:
+    path: layers/tools
+    compatibleRuntimes:
+      - python3.8
+    description: "Dependencies for billeterie backend"
