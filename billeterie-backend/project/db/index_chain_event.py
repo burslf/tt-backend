@@ -1,3 +1,4 @@
+from typing import List
 from project.core.decorators.fname import fname
 from project.core.helpers.custom_log import get_logger
 from project.db.models import IndexedChainEvent
@@ -59,7 +60,7 @@ def session_get_latest_event_scanned_by_event_and_network(outer_session: Session
 
 
 @fname
-def session_get_all_events_by_network(outer_session: Session, network_id:int) -> [IndexedChainEvent]:
+def session_get_all_events_by_network(outer_session: Session, network_id:int) -> List[IndexedChainEvent]:
     conditional_fields = [outer_session, network_id]
 
     if None in conditional_fields:

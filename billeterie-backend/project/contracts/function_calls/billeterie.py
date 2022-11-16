@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, List
 
 from hexbytes import HexBytes
 from web3 import Web3
@@ -24,11 +24,11 @@ minimum_gas_per_function = {
 
 
 @fname
-def call_create_ticketing(supply_price_date: [int], grey_market_allowed: bool, option_fees: int,
+def call_create_ticketing(supply_price_date: List[int], grey_market_allowed: bool, option_fees: int,
                           offchain_data: str, payees: list, shares: list, network_id: int) -> str:
     inner_session = get_session(connection_type="readonly")
 
-    network_objs: [Network] = session_get_networks(outer_session=inner_session)
+    network_objs: List[Network] = session_get_networks(outer_session=inner_session)
     network_dict: Dict[int, Network] = network_objs_to_dict(network_objs=network_objs)
 
     network_name = network_dict[network_id].name
@@ -66,7 +66,7 @@ def call_mint(to_address: str, creator: str, event_id: int, amount: int, data: s
               value: int, network_id: int) -> str:
     inner_session = get_session(connection_type="readonly")
 
-    network_objs: [Network] = session_get_networks(outer_session=inner_session)
+    network_objs: List[Network] = session_get_networks(outer_session=inner_session)
     network_dict: Dict[int, Network] = network_objs_to_dict(network_objs=network_objs)
 
     network_name = network_dict[network_id].name

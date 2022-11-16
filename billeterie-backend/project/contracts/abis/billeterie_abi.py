@@ -61,12 +61,6 @@ billeterie_abi = """[
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "optionFees",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
           "name": "initialSupply",
           "type": "uint256"
         },
@@ -80,6 +74,12 @@ billeterie_abi = """[
           "indexed": false,
           "internalType": "uint256",
           "name": "eventDate",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "optionFees",
           "type": "uint256"
         }
       ],
@@ -435,6 +435,19 @@ billeterie_abi = """[
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "contractURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256[]",
@@ -641,6 +654,35 @@ billeterie_abi = """[
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_creator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPayees",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
         }
       ],
       "stateMutability": "view",
@@ -1029,6 +1071,19 @@ billeterie_abi = """[
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "s_contractURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -1126,6 +1181,19 @@ billeterie_abi = """[
         }
       ],
       "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uri",
+          "type": "string"
+        }
+      ],
+      "name": "setContractURI",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

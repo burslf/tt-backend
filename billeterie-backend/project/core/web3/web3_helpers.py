@@ -1,12 +1,11 @@
 import os
 import time
 
-from web3 import Web3
-from web3.middleware import geth_poa_middleware
-
 from project.core.decorators.fname import fname
 from project.core.helpers.custom_log import get_logger
 from project.general.chains_configs import block_interval_per_chain
+from web3 import Web3
+from web3.middleware import geth_poa_middleware
 
 env = os.environ["ENV"]
 

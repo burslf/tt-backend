@@ -3,7 +3,7 @@ import os
 
 import boto3
 from botocore.config import Config
-
+from typing import List
 from project.core.decorators.fname import fname
 from project.core.helpers.custom_log import get_logger
 
@@ -32,6 +32,6 @@ def get_sqs_client_by_name(queue_name=None):
 
 
 @fname
-def send_message(queue_name: str, messages: [dict]):
+def send_message(queue_name: str, messages: List[dict]):
     queue = get_sqs_client_by_name(queue_name=queue_name)
     queue.send_messages(Entries=messages)

@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Dict
 
 from project.contracts.abis.billeterie_abi import billeterie_abi
 from project.core.helpers.custom_log import get_logger
@@ -14,7 +15,7 @@ from project.general.chains_configs import contract_addresses, contract_creation
 logger = get_logger()
 
 
-def event_created_monitor(event: {}, context: {}, network_dict=None):
+def event_created_monitor(event: Dict, context: Dict, network_dict=None):
     records = event.get("Records")
 
     if records is None:

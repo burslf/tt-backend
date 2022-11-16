@@ -9,22 +9,23 @@ provider:
   region: us-east-1
   stage: develop
   environment: ${file(env.${opt:stage, self:provider.stage}.json)}
+  profile: ticketrust
   iam:
     role:
       statements:
-#        - Effect: 'Allow'
-#          Action:
-#            - 'lambda:InvokeFunction'
-#            - 'lambda:UpdateFunctionConfiguration'
-#            - 'lambda:GetFunction'
-#            - 'lambda:listAliases'
-#            - 'lambda:listVersionsByFunction'
-#            - 'lambda:deleteFunction'
-#            - 'lambda:listLayerVersions'
-#            - 'lambda:GetLayerVersion'
-#            - 'lambda:deleteLayerVersion'
-#          Resource:
-#            - '*'
+        - Effect: 'Allow'
+          Action:
+            - 'lambda:InvokeFunction'
+            - 'lambda:UpdateFunctionConfiguration'
+            - 'lambda:GetFunction'
+            - 'lambda:listAliases'
+            - 'lambda:listVersionsByFunction'
+            - 'lambda:deleteFunction'
+            - 'lambda:listLayerVersions'
+            - 'lambda:GetLayerVersion'
+            - 'lambda:deleteLayerVersion'
+          Resource:
+            - '*'
         # Allow functions to read/write objects in a bucket
         - Effect: Allow
           Action:
@@ -60,28 +61,28 @@ functions:
       layers:
         - ${file(env.${opt:stage, self:provider.stage}.json):LAMBDA_HANDLER_LAYER_ARN}
 
-  eventMonitor:
-    handler: project/lambdas/monitor/event_monitor.event_monitor
+  activityMonitor:
+    handler: project/lambdas/event_monitors/activity_monitor.activity_monitor
     timeout: 10
     memorySize: 128
     events:
       - sqs:
           arn:
             Fn::GetAtt:
-              - eventMonitor
+              - activityMonitor
               - Arn
     layers:
       - ${file(env.${opt:stage, self:provider.stage}.json):LAMBDA_HANDLER_LAYER_ARN}
 
-  ethEventCreatedMonitor:
-    handler: project/lambdas/monitor/event_created_monitor.event_created_monitor
+  ethEventMonitor:
+    handler: project/lambdas/event_monitors/event_monitor.event_monitor
     timeout: 10
     memorySize: 128
     events:
       - sqs:
           arn:
             Fn::GetAtt:
-              - ethEventCreatedMonitor
+              - ethEventMonitor
               - Arn
     layers:
       - ${file(env.${opt:stage, self:provider.stage}.json):LAMBDA_HANDLER_LAYER_ARN}
@@ -95,33 +96,39 @@ package:
 
 resources:
  Resources:
-   eventMonitor:
+    activityMonitor:
      Type: "AWS::SQS::Queue"
      Properties:
-       QueueName: "${opt:stage, self:provider.stage}_event_monitor"
+       QueueName: "${opt:stage, self:provider.stage}_activity_monitor"
        VisibilityTimeout: 30
-   ethEventCreatedMonitor:
+    ethEventMonitor:
      Type: "AWS::SQS::Queue"
      Properties:
-       QueueName: "${opt:stage, self:provider.stage}_ethereum_event_created_monitor"
+       QueueName: "${opt:stage, self:provider.stage}_ethereum_event_monitor"
        VisibilityTimeout: 30
-   offchainMonitor:
-     Type: "AWS::SQS::Queue"
-     Properties:
-       QueueName: "${opt:stage, self:provider.stage}_ethereum_offchain_monitor"
-       VisibilityTimeout: 30
-   mintMonitor:
-     Type: "AWS::SQS::Queue"
-     Properties:
-       QueueName: "${opt:stage, self:provider.stage}_ethereum_mint_monitor"
-       VisibilityTimeout: 30
-   optionAddedMonitor:
-     Type: "AWS::SQS::Queue"
-     Properties:
-       QueueName: "${opt:stage, self:provider.stage}_ethereum_option_added_monitor"
-       VisibilityTimeout: 30
-   optionRemovedMonitor:
-     Type: "AWS::SQS::Queue"
-     Properties:
-       QueueName: "${opt:stage, self:provider.stage}_ethereum_option_removed_monitor"
-       VisibilityTimeout: 30
+
+  #  ethEventCreatedMonitor:
+  #    Type: "AWS::SQS::Queue"
+  #    Properties:
+  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_event_created_monitor"
+  #      VisibilityTimeout: 30
+  #  offchainMonitor:
+  #    Type: "AWS::SQS::Queue"
+  #    Properties:
+  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_offchain_monitor"
+  #      VisibilityTimeout: 30
+  #  mintMonitor:
+  #    Type: "AWS::SQS::Queue"
+  #    Properties:
+  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_mint_monitor"
+  #      VisibilityTimeout: 30
+  #  optionAddedMonitor:
+  #    Type: "AWS::SQS::Queue"
+  #    Properties:
+  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_option_added_monitor"
+  #      VisibilityTimeout: 30
+  #  optionRemovedMonitor:
+  #    Type: "AWS::SQS::Queue"
+  #    Properties:
+  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_option_removed_monitor"
+  #      VisibilityTimeout: 30

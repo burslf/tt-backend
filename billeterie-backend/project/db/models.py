@@ -53,3 +53,47 @@ class Network(Base):
 
     def as_dict(self):
         return transform_to_dict(model=self)
+
+class EventCreated(Base):
+    __tablename__ = "event_created"
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow)
+    tx_hash = Column(String(200), nullable=False)
+    indexed_chain_event_id = Column(Integer, ForeignKey("indexed_chain_event.id"), nullable=False)
+    event_id = Column(Integer, nullable=False)
+    creator = Column(String(200), nullable=False)
+    tickets_total = Column(Integer, nullable=False)
+    tickets_left = Column(Integer, nullable=False, default=False)
+    event_date = Column(DateTime(timezone=True), nullable=False)
+    options_fees = Column(Integer, nullable=False)
+    offchain_data = Column(String(200))
+    shares = Column(JSON)
+    grey_market_allowed = Column(Boolean, default=False, server_default="False", nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "event_id", name="uc_event_id"
+        ),
+    )
+
+    def as_dict(self):
+        return transform_to_dict(model=self)
+
+class TicketMinted(Base):
+    __tablename__ = "ticket_minted"
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow)
+    tx_hash = Column(String(200), nullable=False)
+    indexed_chain_event_id = Column(Integer, ForeignKey("indexed_chain_event.id"), nullable=False)
+    event_id = Column(Integer, ForeignKey("event_created.event_id"), nullable=False)
+    buyer = Column(String(200), nullable=False)
+    amount = Column(Integer, nullable=False)
+
+    __table_args__ = (
+
+    )
+
+    def as_dict(self):
+        return transform_to_dict(model=self)
