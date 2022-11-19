@@ -90,3 +90,19 @@ def session_get_unprocessed_events_by_network(outer_session: Session, network_id
     return res
 
 
+@fname
+def session_set_event_as_complete(outer_session: Session, unprocessed_event_id: int):
+    conditional_fields = [outer_session, unprocessed_event_id]
+
+    if None in conditional_fields:
+        raise Exception(f"{fname} conditional_fields: {conditional_fields}")
+
+    res = (outer_session.query(IndexedChainEvent)
+           .filter(IndexedChainEvent.id == unprocessed_event_id)
+           .update({'completed': True})
+           )
+
+    outer_session.commit()
+
+    return res
+

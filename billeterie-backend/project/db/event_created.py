@@ -45,3 +45,17 @@ def session_add_new_created_event(
     outer_session.commit()
 
     return event_created
+
+@fname
+def session_get_created_events(outer_session: Session, network_id:int) -> List[EventCreated]:
+    conditional_fields = [outer_session, network_id]
+
+    if None in conditional_fields:
+        raise Exception(f"{fname} conditional_fields: {conditional_fields}")
+
+    res = (outer_session.query(EventCreated)
+           .filter(EventCreated.network_id == network_id)
+           .all()
+           )
+
+    return res

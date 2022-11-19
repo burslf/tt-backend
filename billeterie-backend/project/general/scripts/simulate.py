@@ -1,19 +1,22 @@
+
 import logging
+
+from project.db.event_created import session_get_created_events
 # import os
-import sys
-
-from project.core.session import get_session
-
-from project.db.network import session_get_network_details_by_name
-
 from project.core.helpers.load_env import load_environment_variables
 
-import boto3
+import sys
 
 load_environment_variables(env="develop", parent_level=0)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-from project.contracts.function_calls.billeterie import get_payees
+from project.lambdas.event_processors.event_created_processor import event_created_processor
+
+from project.core.session import get_session
+
+
+
+import boto3
 
 
 # from project.core.session import get_session
@@ -67,8 +70,6 @@ from project.contracts.function_calls.billeterie import call_mint, call_create_t
 
 inner_session = get_session(connection_type="readonly")
 
-network_obj = session_get_network_details_by_name(outer_session=inner_session, network_name="ETHEREUM")
-
-res = get_payees(event_id=0, creator="0x102bb817b5acd75d3066b20883a2f917c5677777", network_obj=network_obj)()
-
+res = session_get_created_events(outer_session=inner_session, network_id=1)
+# res = event_created_processor(event={}, context={})
 print(res)

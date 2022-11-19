@@ -1,9 +1,11 @@
 import json
 from typing import List
 
+from project.contracts.function_calls.billeterie import get_offchain_uri, get_payees
+
 from project.db.models import IndexedChainEvent
 from project.db.event_created import session_add_new_created_event
-from project.db.index_chain_event import session_get_unprocessed_events_by_network
+from project.db.index_chain_event import session_get_unprocessed_events_by_network, session_set_event_as_complete
 
 from project.core.decorators.fname import fname
 from project.core.session import get_session
@@ -30,10 +32,19 @@ def event_created_processor(event, context):
         )
         
         for unprocessed_event in unprocessed_events:
-            
+            created_event_shares = get_payees(
+                event_id=unprocessed_event.dictionary_attributes['id'], 
+                creator=unprocessed_event.dictionary_attributes['owner'], 
+                network_obj=network_obj
+            )
+            offchain_uri = get_offchain_uri(
+                event_id=unprocessed_event.dictionary_attributes['id'],
+                network_obj=network_obj
+            )
 
             session_add_new_created_event(
                 outer_session=inner_session,
+                indexed_chain_event_id=unprocessed_event.id,
                 tx_hash=unprocessed_event.tx_hash,
                 network_id=unprocessed_event.network_id,
                 event_id=unprocessed_event.dictionary_attributes['id'],
@@ -41,36 +52,16 @@ def event_created_processor(event, context):
                 tickets_total=unprocessed_event.dictionary_attributes['initialSupply'],
                 tickets_left=unprocessed_event.dictionary_attributes['initialSupply'],
                 event_date=unprocessed_event.dictionary_attributes['eventDate'],
-                options_fees=unprocessed_event.dictionary_attributes['optionsFees'],
+                options_fees=unprocessed_event.dictionary_attributes['optionFees'],
                 grey_market_allowed=unprocessed_event.dictionary_attributes['greyMarketAllowed'],
-                offchain_data="",
-                shares=[],
+                offchain_data=offchain_uri,
+                shares=created_event_shares,
+                price=unprocessed_event.dictionary_attributes['price'],
+            )
+
+            session_set_event_as_complete(
+                outer_session=inner_session, 
+                unprocessed_event_id=unprocessed_event.id
             )
 
     inner_session.close()
-
-    # events_to_monitor = [
-    #     "EventCreated", 
-    #     "OffchainDataUpdated", 
-    #     "OptionAdded", 
-    #     "OptionRemoved", 
-    #     "TransferSingle" 
-    # ]
-
-    # sqs_event_monitor_name = "event_monitor"
-
-    # for network in network_objs:
-        # for event_to_monitor in events_to_monitor:
-            # try:
-                # message = get_sqs_message(function_name=sqs_event_monitor_name,
-                #                           message_body={'network_name': network.name, 'event_name': event_to_monitor})
-                # send_message(queue_name=f'{network.name.lower()}_{sqs_event_monitor_name}', messages=[message])
-
-                # logger.info(f'CALLED SQS EVENT MONITOR FOR : {network.name.lower()}')
-            # except Exception as e:
-            #     logger.info(e)
-            #     error_message = json.dumps(e)
-            #     message: json.dumps(e)
-            #     send_slack_message(message=error_message)
-
-    logger.info("SLEEPING FOR NOW...")

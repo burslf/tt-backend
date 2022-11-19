@@ -46,12 +46,12 @@ provider:
 #      - ${file(env.${opt:stage, self:provider.stage}.json):PRIVATE_SUBNET_B} # develop-private-subnet-1
 
 functions:
-  latestEventScanned:
-      handler: project/lambdas/api/latest_event_scanned.latest_event_scanned
+  apiGetCreatedEvents:
+      handler: project/lambdas/api/api_get_created_events.api_get_created_events
       memorySize: 128
       events:
         - http:
-            path: "/latest_event"
+            path: "/created_events"
             method: get
             cors: true
             request:
@@ -106,29 +106,3 @@ resources:
      Properties:
        QueueName: "${opt:stage, self:provider.stage}_ethereum_event_monitor"
        VisibilityTimeout: 30
-
-  #  ethEventCreatedMonitor:
-  #    Type: "AWS::SQS::Queue"
-  #    Properties:
-  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_event_created_monitor"
-  #      VisibilityTimeout: 30
-  #  offchainMonitor:
-  #    Type: "AWS::SQS::Queue"
-  #    Properties:
-  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_offchain_monitor"
-  #      VisibilityTimeout: 30
-  #  mintMonitor:
-  #    Type: "AWS::SQS::Queue"
-  #    Properties:
-  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_mint_monitor"
-  #      VisibilityTimeout: 30
-  #  optionAddedMonitor:
-  #    Type: "AWS::SQS::Queue"
-  #    Properties:
-  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_option_added_monitor"
-  #      VisibilityTimeout: 30
-  #  optionRemovedMonitor:
-  #    Type: "AWS::SQS::Queue"
-  #    Properties:
-  #      QueueName: "${opt:stage, self:provider.stage}_ethereum_option_removed_monitor"
-  #      VisibilityTimeout: 30

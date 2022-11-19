@@ -66,12 +66,13 @@ class EventCreated(Base):
     tickets_total = Column(Integer, nullable=False)
     tickets_left = Column(Integer, nullable=False, default=False)
     price = Column(Integer, nullable=False)
-    event_date = Column(DateTime(timezone=True), nullable=False)
+    event_date = Column(Integer, nullable=False)
     options_fees = Column(Integer, nullable=False)
     offchain_data = Column(String(200))
     shares = Column(JSON)
     grey_market_allowed = Column(Boolean, default=False, server_default="False", nullable=False)
-
+    network_id = Column(Integer, ForeignKey("network.id"), nullable=False)
+    
     __table_args__ = (
         UniqueConstraint(
             "event_id", name="uc_event_id"

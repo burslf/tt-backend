@@ -109,8 +109,6 @@ def get_payees(
     if None in conditional_fields:
         raise Exception(f"Missing required field(s)")
 
-    inner_session = get_session(connection_type="readonly")
-
     web3 = get_web3_instance(rpc_url=network_obj.rpc_url)
 
     billeterie_address = Web3.toChecksumAddress(contract_addresses["billeterie"][env][network_obj.name])
@@ -120,8 +118,31 @@ def get_payees(
 
     contract_instance = web3.eth.contract(address=billeterie_address, abi=billeterie_abi)
 
-    response = contract_instance.functions["getPayees"](*function_args)
-    
+    response = contract_instance.functions["getPayees"](*function_args).call()
+
+    return response
+
+
+@fname
+def get_offchain_uri(
+    event_id: int,
+    network_obj: Network
+) -> Any:
+    conditional_fields = [event_id, network_obj]
+
+    if None in conditional_fields:
+        raise Exception(f"Missing required field(s)")
+
+    web3 = get_web3_instance(rpc_url=network_obj.rpc_url)
+
+    billeterie_address = Web3.toChecksumAddress(contract_addresses["billeterie"][env][network_obj.name])
+
+
+    function_args = (event_id,)
+
+    contract_instance = web3.eth.contract(address=billeterie_address, abi=billeterie_abi)
+
+    response = contract_instance.functions["uri"](*function_args).call()
 
     return response
 

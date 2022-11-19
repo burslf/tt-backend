@@ -13,7 +13,7 @@ contract_addresses = {
 
 contract_creation_block = {
     "develop": {
-        "ETHEREUM": 7962992
+        "ETHEREUM": 7983343
     }
 }
 
