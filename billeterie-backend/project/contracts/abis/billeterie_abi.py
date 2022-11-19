@@ -81,6 +81,12 @@ billeterie_abi = """[
           "internalType": "uint256",
           "name": "optionFees",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "greyMarketAllowed",
+          "type": "bool"
         }
       ],
       "name": "EventCreated",

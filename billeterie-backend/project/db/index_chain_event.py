@@ -73,3 +73,20 @@ def session_get_all_events_by_network(outer_session: Session, network_id:int) ->
 
     return res
 
+@fname
+def session_get_unprocessed_events_by_network(outer_session: Session, network_id:int, event_name: str) -> List[IndexedChainEvent]:
+    conditional_fields = [outer_session, network_id]
+
+    if None in conditional_fields:
+        raise Exception(f"{fname} conditional_fields: {conditional_fields}")
+
+    res = (outer_session.query(IndexedChainEvent)
+           .filter(IndexedChainEvent.network_id == network_id)
+           .filter(IndexedChainEvent.event_name == event_name)
+           .filter(IndexedChainEvent.completed == False)
+           .all()
+           )
+
+    return res
+
+

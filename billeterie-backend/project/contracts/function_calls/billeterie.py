@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from hexbytes import HexBytes
 from web3 import Web3
@@ -97,3 +97,31 @@ def call_mint(to_address: str, creator: str, event_id: int, amount: int, data: s
     tx_hash = web3.eth.send_raw_transaction(raw_tx)
 
     return HexBytes(tx_hash).hex()
+
+@fname
+def get_payees(
+    creator: str, 
+    event_id: int,
+    network_obj: Network
+) -> Any:
+    conditional_fields = [creator, event_id, network_obj]
+
+    if None in conditional_fields:
+        raise Exception(f"Missing required field(s)")
+
+    inner_session = get_session(connection_type="readonly")
+
+    web3 = get_web3_instance(rpc_url=network_obj.rpc_url)
+
+    billeterie_address = Web3.toChecksumAddress(contract_addresses["billeterie"][env][network_obj.name])
+
+
+    function_args = (creator, event_id)
+
+    contract_instance = web3.eth.contract(address=billeterie_address, abi=billeterie_abi)
+
+    response = contract_instance.functions["getPayees"](*function_args)
+    
+
+    return response
+

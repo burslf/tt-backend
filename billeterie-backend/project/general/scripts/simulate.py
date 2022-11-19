@@ -2,12 +2,18 @@ import logging
 # import os
 import sys
 
+from project.core.session import get_session
+
+from project.db.network import session_get_network_details_by_name
+
 from project.core.helpers.load_env import load_environment_variables
 
 import boto3
 
 load_environment_variables(env="develop", parent_level=0)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
+from project.contracts.function_calls.billeterie import get_payees
 
 
 # from project.core.session import get_session
@@ -55,6 +61,14 @@ from project.contracts.function_calls.billeterie import call_mint, call_create_t
 # res = session_add_new_network(outer_session=inner_sess, network_name="RINKEBY",
 #                               block_scanner_url="https://rinkeby.etherscan.io", rpc_url="https://rinkeby.infura.io/v3/d53260b9f071444bab2b519f2a52b1a8")
 
-message = get_sqs_message(function_name="event_monitor", message_body={})
-print(message)
-send_message(queue_name="activity_monitor", messages=[message])
+# message = get_sqs_message(function_name="activity_monitor", message_body={})
+# print(message)
+# send_message(queue_name="activity_monitor", messages=[message])
+
+inner_session = get_session(connection_type="readonly")
+
+network_obj = session_get_network_details_by_name(outer_session=inner_session, network_name="ETHEREUM")
+
+res = get_payees(event_id=0, creator="0x102bb817b5acd75d3066b20883a2f917c5677777", network_obj=network_obj)()
+
+print(res)

@@ -13,21 +13,28 @@ logger = get_logger()
 
 
 @fname
-def event_monitor(event, context):
+def activity_monitor(event, context):
     inner_session = get_session(connection_type="readonly")
 
     network_objs: List[Network] = session_get_networks(outer_session=inner_session)
 
     inner_session.close()
 
-    events_to_monitor = ["EventCreated", "OffchainDataUpdated", "OptionAdded", "OptionRemoved", "TransferSingle" ]
+    events_to_monitor = [
+        "EventCreated", 
+        "OffchainDataUpdated", 
+        "OptionAdded", 
+        "OptionRemoved", 
+        "TransferSingle" 
+    ]
+
     sqs_event_monitor_name = "event_monitor"
 
     for network in network_objs:
-        for event_name in events_to_monitor:
+        for event_to_monitor in events_to_monitor:
             try:
                 message = get_sqs_message(function_name=sqs_event_monitor_name,
-                                          message_body={'network_name': network.name, 'event_name': event_name})
+                                          message_body={'network_name': network.name, 'event_name': event_to_monitor})
                 send_message(queue_name=f'{network.name.lower()}_{sqs_event_monitor_name}', messages=[message])
 
                 logger.info(f'CALLED SQS EVENT MONITOR FOR : {network.name.lower()}')

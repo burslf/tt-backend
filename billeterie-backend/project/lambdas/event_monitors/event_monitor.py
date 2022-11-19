@@ -15,7 +15,7 @@ from project.general.chains_configs import contract_addresses, contract_creation
 logger = get_logger()
 
 
-def event_created_monitor(event: Dict, context: Dict, network_dict=None):
+def event_monitor(event: Dict, context: Dict, network_dict=None):
     records = event.get("Records")
 
     if records is None:

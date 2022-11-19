@@ -6,7 +6,7 @@ from project.core.helpers.custom_log import get_logger
 logger = get_logger()
 
 
-def fname(func) -> Any:
+def fname(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         f_name = func.__name__

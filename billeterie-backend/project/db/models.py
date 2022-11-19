@@ -65,6 +65,7 @@ class EventCreated(Base):
     creator = Column(String(200), nullable=False)
     tickets_total = Column(Integer, nullable=False)
     tickets_left = Column(Integer, nullable=False, default=False)
+    price = Column(Integer, nullable=False)
     event_date = Column(DateTime(timezone=True), nullable=False)
     options_fees = Column(Integer, nullable=False)
     offchain_data = Column(String(200))
