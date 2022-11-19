@@ -13,7 +13,7 @@ logger.setLevel("INFO")
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
-def add_offchain_data(token_id: int, name: str, desc: str):
+def add_offchain_data(token_id: int,  name: str):
     s3 = boto3.client('s3')
 
     try:
@@ -28,11 +28,15 @@ def add_offchain_data(token_id: int, name: str, desc: str):
         json_data = {
             "name": name,
             "image": file_s3_url,
-            "description": desc,
         }
 
         s3.put_object(Body=json.dumps(json_data), Bucket="ticketrust-develop", Key=f"metadata/{str(token_id)}.json")
+
+        metadata_url = get_s3_link(bucket_name="ticketrust_develop", key=f'metadata/{str(token_id)}.json')
+
         logger.info("Done :)")
+
+        return metadata_url
 
     except FileNotFoundError:
         print("The file was not found")
