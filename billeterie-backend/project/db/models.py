@@ -88,6 +88,7 @@ class TicketMinted(Base):
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow)
     tx_hash = Column(String(200), nullable=False)
+    network_id = Column(Integer, ForeignKey("network.id"), nullable=False)
     indexed_chain_event_id = Column(Integer, ForeignKey("indexed_chain_event.id"), nullable=False)
     event_id = Column(Integer, ForeignKey("event_created.event_id"), nullable=False)
     buyer = Column(String(200), nullable=False)

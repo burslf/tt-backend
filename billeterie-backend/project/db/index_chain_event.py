@@ -1,4 +1,6 @@
-from typing import List
+from typing import Any, List
+
+from sqlalchemy import Integer
 from project.core.decorators.fname import fname
 from project.core.helpers.custom_log import get_logger
 from project.db.models import IndexedChainEvent
@@ -106,3 +108,27 @@ def session_set_event_as_complete(outer_session: Session, unprocessed_event_id: 
 
     return res
 
+@fname
+def session_get_latest_event_by_dictionary_attribute(
+    outer_session: Session, 
+    network_id:int, 
+    event_name: str, 
+    attribute:str, 
+    value: Any
+):
+    conditional_fields = [outer_session, network_id, event_name, attribute, value]
+
+    if None in conditional_fields:
+        raise Exception(f"{fname} conditional_fields: {conditional_fields}")
+    
+    res = (outer_session.query(IndexedChainEvent)
+           .filter(IndexedChainEvent.network_id == network_id)
+           .filter(IndexedChainEvent.event_name == event_name)
+           .filter(
+                IndexedChainEvent.dictionary_attributes.op("->>")(attribute).cast(Integer) == value
+           )
+           .order_by(IndexedChainEvent.block_number.desc())
+           .first()
+           )
+    
+    return res

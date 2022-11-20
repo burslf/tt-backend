@@ -1,17 +1,23 @@
 
 import logging
 
-from project.db.event_created import session_get_created_events
-# import os
-from project.core.helpers.load_env import load_environment_variables
+from project.lambdas.event_processors.ticket_minted_processor import ticket_minted_processor
 
+
+# import os
+
+from project.core.helpers.load_env import load_environment_variables
 import sys
 
 load_environment_variables(env="develop", parent_level=0)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-from project.lambdas.event_processors.event_created_processor import event_created_processor
 
+from project.db.index_chain_event import session_get_latest_event_by_dictionary_attribute
+from project.lambdas.event_processors.event_created_processor import event_created_processor
+from project.db.event_created import session_get_created_events
+
+from project.lambdas.event_processors.offchain_data_processor import offchain_data_processor
 from project.core.session import get_session
 
 
@@ -68,8 +74,13 @@ from project.contracts.function_calls.billeterie import call_mint, call_create_t
 # print(message)
 # send_message(queue_name="activity_monitor", messages=[message])
 
-inner_session = get_session(connection_type="readonly")
+# inner_session = get_session(connection_type="readonly")
 
-res = session_get_created_events(outer_session=inner_session, network_id=1)
+# res = session_get_created_events(outer_session=inner_session, network_id=1)
 # res = event_created_processor(event={}, context={})
-print(res)
+# print(res)
+
+# res = offchain_data_processor(event={}, context={})
+# res = ticket_minted_processor(event={}, context={})
+
+# print(res)

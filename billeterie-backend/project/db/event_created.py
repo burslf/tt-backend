@@ -59,3 +59,39 @@ def session_get_created_events(outer_session: Session, network_id:int) -> List[E
            )
 
     return res
+
+@fname
+def session_get_created_event_by_event_id(outer_session: Session, network_id:int, event_id: int) -> EventCreated:
+    conditional_fields = [outer_session, network_id]
+
+    if None in conditional_fields:
+        raise Exception(f"{fname} conditional_fields: {conditional_fields}")
+
+    res = (outer_session.query(EventCreated)
+           .filter(EventCreated.network_id == network_id)
+           .filter(EventCreated.event_id == event_id)
+           .first()
+           )
+
+    return res
+
+
+@fname
+def session_update_created_event(
+    outer_session: Session, 
+    event_id: int, 
+    update_vals: dict
+):
+    conditional_fields = [outer_session, event_id]
+
+    if None in conditional_fields:
+        raise Exception(f"{fname} conditional_fields: {conditional_fields}")
+
+    res = (outer_session.query(EventCreated)
+           .filter(EventCreated.event_id == event_id)
+           .update(update_vals)
+           )
+
+    outer_session.commit()
+
+    return res
